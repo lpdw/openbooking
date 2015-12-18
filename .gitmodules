@@ -1,0 +1,4 @@
+[submodule "wp-reservation-api"]
+	path = wp-reservation-api
+	url = git://github.com/lpdw/wp-reservation-api.git
+	branch = dev
