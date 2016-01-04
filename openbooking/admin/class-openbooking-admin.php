@@ -100,4 +100,108 @@ class Openbooking_Admin {
 
 	}
 
+	/**
+	 * Register admin menu items.
+	 *
+	 * @since   1.0.0
+	 */
+	public function register_menu() {
+
+		// Main menu page
+		add_menu_page(
+			__( 'Openbooking', $this->plugin_name ),
+			__( 'Openbooking', $this->plugin_name ),
+			'edit_pages',
+			'openbooking',
+			array( $this, 'display_admin_page' ),
+			'dashicons-calendar-alt'
+		);
+
+		// Members page
+		add_submenu_page(
+			'openbooking',
+			__( 'Openbooking Members', $this->plugin_name ),
+			__( 'Members', $this->plugin_name ),
+			'manage_options',
+			'openbooking-members',
+			array( $this, 'display_members_page' )
+		);
+
+		// Events page
+		add_submenu_page(
+			'openbooking',
+			__( 'Openbooking Events', $this->plugin_name ),
+			__( 'Events', $this->plugin_name ),
+			'manage_options',
+			'openbooking-events',
+			array( $this, 'display_events_page' )
+		);
+
+		// Newsletter page
+		add_submenu_page(
+			'openbooking',
+			__( 'Openbooking Newsletter/Reminder', $this->plugin_name ),
+			__( 'Newsletter', $this->plugin_name ),
+			'edit_pages',
+			'openbooking-newsletter',
+			array( $this, 'display_newsletter_page' )
+		);
+
+		// Options page
+		add_submenu_page(
+			'openbooking',
+			__( 'Openbooking Options', $this->plugin_name ),
+			__( 'Options', $this->plugin_name ),
+			'manage_options',
+			'staff-member-options',
+			array( $this, 'display_options_page' )
+		);
+
+	}
+
+	/**
+	 * Display main admin page content.
+	 *
+	 * @since   1.0.0
+	 */
+	public function display_admin_page() {
+		include_once( 'partials/openbooking-admin-display.php' );
+	}
+
+	/**
+	 * Display Members page content.
+	 *
+	 * @since   1.0.0
+	 */
+	public function display_members_page() {
+		include_once( 'partials/openbooking-members-display.php' );
+	}
+
+	/**
+	 * Display Events page content.
+	 *
+	 * @since   1.0.0
+	 */
+	public function display_events_page() {
+		include_once( 'partials/openbooking-events-display.php' );
+	}
+
+	/**
+	 * Display Newsletter page content.
+	 *
+	 * @since   1.0.0
+	 */
+	public function display_newsletter_page() {
+		include_once( 'partials/openbooking-newsletter-display.php' );
+	}
+
+	/**
+	 * Display Options page content.
+	 *
+	 * @since   1.0.0
+	 */
+	public function display_options_page() {
+		include_once( 'partials/openbooking-options-display.php' );
+	}
+
 }
