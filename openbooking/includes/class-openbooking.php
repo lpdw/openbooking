@@ -25,7 +25,7 @@
  * @since      1.0.0
  * @package    Openbooking
  * @subpackage Openbooking/includes
- * @author     LPDW <contact@epoulain.fr>
+ * @author     LPDW <preprod-openbooking@epoulain.fr>
  */
 class Openbooking {
 
