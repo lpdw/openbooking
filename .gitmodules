@@ -1,4 +1,4 @@
-[submodule "wp-reservation-api"]
-	path = wp-reservation-api
-	url = git://github.com/lpdw/wp-reservation-api.git
+[submodule "openbooking/openbooking-api"]
+	path = openbooking/openbooking-api
+	url = https://github.com/lpdw/openbooking-api.git
 	branch = dev
