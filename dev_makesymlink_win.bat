@@ -1,0 +1,1 @@
+mklink /J test\wp-content\plugins\openbooking openbooking

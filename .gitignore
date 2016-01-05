@@ -1,3 +1,6 @@
+#Ignore test folder
+test/
+
 # Created by https://www.gitignore.io/api/windows,linux,osx,intellij,netbeans,sublimetext,wordpress,phpstorm,notepadpp
 
 ### Windows ###
