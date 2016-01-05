@@ -15,6 +15,55 @@
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
-<h2>Members display</h2>
+<div class="wrap">
+    <h2><?php _e( 'Openbooking', 'openbooking' ); ?></h2>
+    <h2><?php _e( 'Openbooking Members', 'openbooking' ); ?></h2>
+    <p><?php _e( 'Members are managed here', 'openbooking' ); ?></p>
+    <?php $members = array(
+        array(
+            "id"=>"2",
+            "name"=>"Toto",
+            "email"=>"toto@gmail.com",
+        ),
+        array(
+            "id"=>"5",
+            "name"=>"Tata",
+            "email"=>"tata@gmail.com"
+        )
+    );
+    if( count($members) > 0 ) : ?>
 
-<p>Bacon ipsum dolor amet tri-tip prosciutto bacon shoulder, andouille meatball alcatra landjaeger capicola.  Andouille ribeye short ribs, pancetta brisket boudin prosciutto pork belly.  Jerky turkey pastrami biltong ball tip doner, filet mignon turducken ground round.  Ball tip alcatra t-bone, leberkas flank swine pork chop pork belly spare ribs kielbasa pork cow pancetta shank.</p><p>Salami porchetta pancetta kielbasa picanha cow brisket ribeye.  Picanha bacon shankle, venison pastrami jerky doner tri-tip andouille pork boudin fatback.  Turkey pancetta pork chop meatball, kielbasa short ribs bresaola ribeye.  Flank sausage kielbasa drumstick salami.  Bacon kevin spare ribs, jerky sausage boudin pork belly biltong turkey cow drumstick jowl andouille pork chuck.  Turkey picanha jerky corned beef ham pastrami.</p><p>Tail ball tip meatloaf tri-tip landjaeger, ribeye corned beef meatball.  Salami pork belly venison swine, bresaola turkey sirloin.  T-bone boudin meatloaf pork prosciutto andouille picanha jowl beef ribs salami pork loin jerky kevin spare ribs.  Kevin frankfurter salami, chuck pork belly drumstick pastrami corned beef strip steak.  Pork chop shoulder frankfurter doner chuck fatback biltong ribeye tenderloin short ribs.</p><p>Ball tip doner boudin, short ribs short loin pastrami ground round.  Jerky salami drumstick short loin.  Salami short ribs bresaola, prosciutto boudin pancetta meatball pastrami ball tip.  T-bone ham flank beef ribs beef, meatball short ribs pancetta pork belly pork.</p><p>Sirloin ham pork loin chuck ribeye chicken ground round swine shoulder.  Picanha kielbasa jerky alcatra frankfurter cupim tenderloin, ham hock turducken sausage drumstick beef pastrami.  Meatloaf corned beef boudin, meatball rump porchetta tail pastrami ribeye pork prosciutto tri-tip kevin sausage.  Short ribs pork salami, beef ribs turkey filet mignon pancetta.  Boudin drumstick ham hock, pork belly beef doner pork loin meatloaf chicken picanha fatback pork landjaeger leberkas ball tip.</p>
+        <table class="wp-list-table widefat fixed posts sslp-order">
+            <thead>
+            <tr>
+                <th class="column-name"><?php _e( 'Name', 'openbooking' ); ?></th>
+                <th class="column-email"><?php _e( 'Email', 'openbooking' ); ?></th>
+                <th class="column-edit"><?php _e( 'Edit', 'openbooking' ); ?></th>
+            </tr>
+            </thead>
+            <tbody data-post-type="product">
+            <?php  foreach( $members as $members_index=>$member ) :?>
+                <tr id="post-<?php echo $member['id'];?>">
+                    <td class="column-name"><?php echo $member['name'] ?></td>
+                    <td class="column-email"><?php echo $member['email'] ?></td>
+                    <td class="column-edit"><a href="#edit-member-<?php echo $member['id'];?>"><?php _e( 'Edit', 'openbooking' ); ?></a></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th class="column-name"><?php _e( 'Name', 'openbooking' ); ?></th>
+                <th class="column-email"><?php _e( 'Email', 'openbooking' ); ?></th>
+                <th class="column-edit"><?php _e( 'Edit', 'openbooking' ); ?></th>
+            </tr>
+            </tfoot>
+
+        </table>
+
+    <?php else: ?>
+
+        <p><?php _e( 'No members found, why not <a href="#">create one?', 'openbooking' ); ?></a></p>
+
+    <?php endif; ?>
+    <?php wp_reset_postdata(); // Don't forget to reset again! ?>
+</div><!-- .wrap -->

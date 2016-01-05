@@ -15,6 +15,55 @@
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
-<h2>Events display</h2>
+<div class="wrap">
+    <h2><?php _e( 'Openbooking', 'openbooking' ); ?></h2>
+    <h2><?php _e( 'Openbooking Events', 'openbooking' ); ?></h2>
+    <p><?php _e( 'Events are managed here', 'openbooking' ); ?></p>
+    <?php $members = array(
+        array(
+            "id"=>"2",
+            "name"=>"Toto",
+            "email"=>"toto@gmail.com",
+        ),
+        array(
+            "id"=>"5",
+            "name"=>"Tata",
+            "email"=>"tata@gmail.com"
+        )
+    );
+    if( count($members) > 0 ) : ?>
 
-<p>Bacon ipsum dolor amet boudin pig porchetta tail cow, landjaeger rump pancetta jowl venison leberkas tongue.  Pork chop meatloaf doner picanha tri-tip, biltong venison filet mignon t-bone.  Ribeye pork chop fatback shankle.  Shoulder chuck pastrami shank ham hock beef ribs picanha cupim pork chop.  Pork chop pig filet mignon sirloin corned beef kielbasa.  Ground round pastrami swine landjaeger tongue pancetta pork loin chuck turkey pork belly leberkas cupim meatloaf meatball.  T-bone jowl shankle pastrami shank, beef ribs shoulder chicken tenderloin leberkas pork belly ham fatback ball tip.</p><p>Kevin brisket sausage tongue corned beef meatloaf.  Tongue leberkas fatback, turkey short loin beef ball tip tail pork.  Filet mignon meatball hamburger venison sausage brisket.  Biltong tongue picanha bacon cupim bresaola.  Pig short ribs picanha, biltong tenderloin beef tail drumstick bresaola cow.  Tenderloin kielbasa ribeye venison andouille chicken strip steak short ribs, salami pork chop pork belly shankle picanha spare ribs.  Picanha pastrami pig frankfurter, cow meatloaf turkey short ribs salami rump.</p><p>Ground round biltong spare ribs, doner tail drumstick picanha short loin tongue pork loin pork belly.  Ham hock beef ribs shoulder tail landjaeger jerky porchetta corned beef boudin pig.  Filet mignon beef ribs cupim ball tip, fatback venison alcatra cow pork belly tri-tip.  Shankle meatloaf doner, boudin tail flank short loin.  Pork belly drumstick sausage sirloin, pork turkey picanha kielbasa beef rump cupim kevin ribeye.  Bresaola biltong pancetta, sirloin jerky strip steak ball tip pork leberkas.  Frankfurter beef ribs ribeye bresaola pancetta biltong.</p><p>Turducken andouille corned beef tongue swine, hamburger ham bresaola jerky leberkas.  Brisket boudin chuck chicken ribeye, meatball turkey.  Sirloin tri-tip swine corned beef pork loin kevin tail beef ribs pork.  Ham hock short ribs bacon beef ribs brisket.</p><p>Picanha spare ribs turducken meatball ball tip.  Jowl doner bacon shoulder kielbasa drumstick.  Pork loin ribeye ham hock tenderloin meatloaf.  Filet mignon frankfurter hamburger, boudin bresaola meatloaf brisket ground round jowl cupim beef flank.  Bacon short ribs sausage, jerky alcatra turducken hamburger.  Landjaeger shank andouille tail.  Chicken salami strip steak meatloaf, pancetta tri-tip bacon pork rump filet mignon kielbasa.</p>
+        <table class="wp-list-table widefat fixed posts">
+            <thead>
+            <tr>
+                <th class="column-name"><?php _e( 'Name', 'openbooking' ); ?></th>
+                <th class="column-email"><?php _e( 'Email', 'openbooking' ); ?></th>
+                <th class="column-edit"><?php _e( 'Edit', 'openbooking' ); ?></th>
+            </tr>
+            </thead>
+            <tbody data-post-type="product">
+            <?php  foreach( $members as $members_index=>$member ) :?>
+                <tr id="post-<?php echo $member['id'];?>">
+                    <td class="column-name"><?php echo $member['name'] ?></td>
+                    <td class="column-email"><?php echo $member['email'] ?></td>
+                    <td class="column-edit"><a href="#edit-member-<?php echo $member['id'];?>"><?php _e( 'Edit', 'openbooking' ); ?></a></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th class="column-name"><?php _e( 'Name', 'openbooking' ); ?></th>
+                <th class="column-email"><?php _e( 'Email', 'openbooking' ); ?></th>
+                <th class="column-edit"><?php _e( 'Edit', 'openbooking' ); ?></th>
+            </tr>
+            </tfoot>
+
+        </table>
+
+    <?php else: ?>
+
+        <p><?php _e( 'No events found, why not <a href="#">create one?', 'openbooking' ); ?></a></p>
+
+    <?php endif; ?>
+    <?php wp_reset_postdata(); // Don't forget to reset again! ?>
+</div><!-- .wrap -->
