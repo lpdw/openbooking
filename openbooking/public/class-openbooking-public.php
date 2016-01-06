@@ -101,6 +101,8 @@ class Openbooking_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/openbooking-public.js', array( 'jquery' ), $this->version, false );
 
+		wp_enqueue_script('google-maps-js', '//maps.googleapis.com/maps/api/js?key=AIzaSyC5bbr5PCxWVFAXgOBPUUfhgBR1t34gE0A&libraries=places');
+
 	}
 
 }
