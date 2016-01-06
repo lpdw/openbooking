@@ -41,6 +41,24 @@ class Openbooking_Admin {
 	private $version;
 
 	/**
+	 * All participants.
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 * @var      string    $version    The current version of this plugin.
+	 */
+	public $participants_obj;
+
+	/**
+	 * All events.
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 * @var      string    $version    The current version of this plugin.
+	 */
+	public $events_obj;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -117,14 +135,14 @@ class Openbooking_Admin {
 			'dashicons-calendar-alt'
 		);
 
-		// Members page
+		// Participants page
 		add_submenu_page(
 			'openbooking',
-			__( 'Openbooking Members', $this->plugin_name ),
-			__( 'Members', $this->plugin_name ),
+			__( 'Openbooking Participants', $this->plugin_name ),
+			__( 'Participants', $this->plugin_name ),
 			'manage_options',
-			'openbooking-members',
-			array( $this, 'display_members_page' )
+			'openbooking-participants',
+			array( $this, 'display_participants_page' )
 		);
 
 		// Events page
@@ -153,7 +171,7 @@ class Openbooking_Admin {
 			__( 'Openbooking Options', $this->plugin_name ),
 			__( 'Options', $this->plugin_name ),
 			'manage_options',
-			'staff-member-options',
+			'staff-participant-options',
 			array( $this, 'display_options_page' )
 		);
 
@@ -169,12 +187,17 @@ class Openbooking_Admin {
 	}
 
 	/**
-	 * Display Members page content.
+	 * Display Participants page content.
 	 *
 	 * @since   1.0.0
 	 */
-	public function display_members_page() {
-		include_once( 'partials/openbooking-members-display.php' );
+	public function display_participants_page() {
+		include_once('partials/openbooking-participants-class.php');
+
+		//add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 10, 3 );
+		$this->participants_obj = new obParticipantsTable();
+
+		include_once('partials/openbooking-participants-display.php');
 	}
 
 	/**
@@ -183,6 +206,11 @@ class Openbooking_Admin {
 	 * @since   1.0.0
 	 */
 	public function display_events_page() {
+		include_once('partials/openbooking-events-class.php');
+
+		//add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 10, 3 );
+		$this->events_obj = new obEventsTable();
+
 		include_once( 'partials/openbooking-events-display.php' );
 	}
 

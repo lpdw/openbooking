@@ -17,8 +17,8 @@
 
 <div class="wrap">
     <h2><?php _e( 'Openbooking', 'openbooking' ); ?></h2>
-    <h2><?php _e( 'Openbooking Events', 'openbooking' ); ?></h2>
-    <p><?php _e( 'Events are managed here', 'openbooking' ); ?></p>
+    <h2><?php _e( 'Openbooking Participants', 'openbooking' ); ?></h2>
+    <p><?php _e( 'Participants are managed here', 'openbooking' ); ?></p>
 
     <div id="poststuff">
         <div id="post-body" class="metabox-holder columns-1">
@@ -26,8 +26,8 @@
                 <div class="meta-box-sortables ui-sortable">
                     <form method="post">
                         <?php
-                        $this->events_obj->prepare_items();
-                        $this->events_obj->display(); ?>
+                        $this->participants_obj->prepare_items();
+                        $this->participants_obj->display(); ?>
                     </form>
                 </div>
             </div>
