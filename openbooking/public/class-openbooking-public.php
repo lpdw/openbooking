@@ -55,6 +55,9 @@ class Openbooking_Public {
 		include_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-show-event.php';
     new Openbooking_ShowEvent();
 
+		include_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-user.php';
+    $current_user = new Openbooking_PublicUser();
+
 	}
 
 	/**

@@ -29,4 +29,22 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	//  $(window).load(function(){
+	// 	 $('#event_join').click(function(){
+	// 	   $.ajax({
+	// 	        url : 'test.php',
+	// 	        type : 'GET',
+	// 	        success : function(code_html, statut){
+	// 						alert('success');
+	// 	        },
+	// 	        error : function(resultat, statut, erreur){
+	// 						alert('ERROR');
+	// 						console.log(resultat, statut, erreur);
+	// 	        },
+	// 	        complete : function(resultat, statut){
+	// 						alert('complete');
+	// 	        }
+	// 	     });
+	// 	 });
+	//  });
 })( jQuery );

@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 class Openbooking_ShowEvent
 {
     public function __construct()
@@ -23,13 +25,25 @@ class Openbooking_ShowEvent
     'open_to_registration'  => true,
     'cancelled'             => false,
     'participants_max'      => 4,
-    'participants_registred'=> 4);
+    'participants_registred'=> 3);
 
+    // check if a user is connected
+    if(isset($_SESSION['id']))
+    {
+      // If yes, ask to db if he is actually partipating to this event
+      // $participate_to_this_event will be true if he is particpating or false if he doesn't
+      //$participate_to_this_event = is_participating($user['id']);
+      $participating_to_this_event = true;
+    }
 
     $html = array();
-    $html[] = '<div class="event">';
 
+    $html[] = '<div id="event_'.$event['id'].'" class="event">';
     $html[] = '<div class="event_header">';
+    if(isset($_SESSION['id']))
+    {
+    $html[] = '<p>'.$_SESSION['email'].' <button id="event_log_out"> Se Déconnecter </button> </p>';
+    }
     $html[] = '<h4 class="event_name">'.$event['name'].'</h4>';
     $html[] = '<p class="event_information"> Organizer: <a href="mailto:'.$event['organizer_email'].'"> '.$event['organizer'].' </a> <br/>
     Address: '.$event['localisation_name'].'<br/>
@@ -45,13 +59,38 @@ class Openbooking_ShowEvent
     $html[] = '<div class="event_footer">';
     if($event['open_to_registration'] && !$event['cancelled'])
     {
-      if($event['participants_registred'] < $event['participants_max'])
-      {
-        $html[] = '<a href="'.$event['id'].'"> Join </a>';
+      if(isset($_SESSION['id'])&&!$event['cancelled']&&$event['open_to_registration']){
+        if($event['participants_registred'] < $event['participants_max'])
+        {
+          if($participating_to_this_event){
+            $html[] = '<p>You are participating to this event.</p>';
+            $html[] = '<button id="event_leave"> Leave </button>';
+          } else {
+            $html[] = '<button id="event_join"> Join </button>';
+          }
+        } else {
+          $html[] = '<h3> All seats are taken. </h3>';
+          $html[] = '<button id="event_alert"> Be alerted if someone leaves.</button>';
+        }
       } else {
-        $html[] = '<h3> All seats are taken ! </h3>';
-        $html[] = '<a href="'.$event['id'].'"> Be alerted </a>';
+        $html[] = '<p>Sorry you must have an account if you want to join an event!</p>';
+
+        $html[] = '<form onsubmit="return false;">';
+        $html[] = '<label for="first_name"> Firstname: </label> <input id="first_name" name="first_name" type="text" placeholder="Firstname"/>';
+        $html[] = '<label for="last_name"> Lastname: </label> <input id="last_name" name="last_name" type="text" placeholder="Lastname"/>';
+        $html[] = '<label for="email"> Email: </label> <input id="email" name="email" type="email" placeholder="Email"/>';
+        $html[] = '<label for="password1"> Password: </label> <input id="password1" name="password1" type="password" placeholder="Password"/>';
+        $html[] = '<label for="password2"> Your password again: </label> <input id="password2" name="password2" type="password" placeholder="Password"/>';
+        $html[] = '<button id="event_sign_in"> Sign in </button>';
+        $html[] = '</form>';
+
+        $html[] = '<form onsubmit="return false;">';
+        $html[] = '<label for="email_log"> Email: </label> <input id="email_log" name="email_log" type="email" placeholder="Email"/>';
+        $html[] = '<label for="password"> Password: </label> <input id="password" name="password" type="password" placeholder="password"/>';
+        $html[] = '<button id="event_log_in"> Log in </button>';
+        $html[] = '</form>';
       }
+      $html[] = '<div id="event_server_message"></div>';
     } elseif ($event['cancelled'])
     {
       $html[] = '<p> Event cancelled </p>';
@@ -78,7 +117,8 @@ class Openbooking_ShowEvent
 
   $js = "
   var map;
-
+(function( $ ) {
+  	'use strict';
   function initialize() {
     // Create a map centered in Pyrmont, Sydney (Australia).
     map = new google.maps.Map(document.getElementById('event_map_".$event['id']."'), {
@@ -134,6 +174,96 @@ class Openbooking_ShowEvent
   }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+$(window).load(function(){
+  $('#event_log_in').click(function(){
+    $.ajax({
+         url : '".plugin_dir_url( __FILE__ )."openbooking-public-log-in.php',
+         type : 'POST',
+         data : 'email=' + email_log.value + '&password=' + password.value,
+         success : function(code_html, statut){
+           $('#event_server_message').html(code_html);
+         },
+         error : function(resultat, statut, erreur){
+           alert('ERROR');
+           console.log(resultat, statut, erreur);
+         },
+         complete : function(resultat, statut){
+
+         }
+    });
+  });
+
+  $('#event_sign_in').click(function(){
+    $.ajax({
+         url : '".plugin_dir_url( __FILE__ )."openbooking-public-sign-in.php',
+         type : 'POST',
+         data : 'first_name=' + first_name.value + '&last_name=' + last_name.value + '&email=' + email.value + '&password_first=' + password1.value + '&password_second=' + password2.value,
+         success : function(code_html, statut){
+           $('#event_server_message').html(code_html);
+         },
+         error : function(resultat, statut, erreur){
+           alert('ERROR');
+           console.log(resultat, statut, erreur);
+         },
+         complete : function(resultat, statut){
+
+         }
+    });
+  });
+
+  $('#event_log_out').click(function(){
+    $.ajax({
+         url : '".plugin_dir_url( __FILE__ )."openbooking-public-log-out.php',
+         type : 'POST',
+         success : function(code_html, statut){
+           $('#event_server_message').html(code_html);
+         },
+         error : function(resultat, statut, erreur){
+           alert('ERROR');
+           console.log(resultat, statut, erreur);
+         },
+         complete : function(resultat, statut){
+
+         }
+    });
+  });
+
+  $('#event_leave').click(function(){
+    $.ajax({
+         url : '".plugin_dir_url( __FILE__ )."openbooking-public-leave.php',
+         type : 'POST',
+         success : function(code_html, statut){
+           $('#event_server_message').html(code_html);
+         },
+         error : function(resultat, statut, erreur){
+           alert('ERROR');
+           console.log(resultat, statut, erreur);
+         },
+         complete : function(resultat, statut){
+
+         }
+    });
+  });
+
+  $('#event_join').click(function(){
+    $.ajax({
+         url : '".plugin_dir_url( __FILE__ )."openbooking-public-join.php',
+         type : 'POST',
+         success : function(code_html, statut){
+           $('#event_server_message').html(code_html);
+         },
+         error : function(resultat, statut, erreur){
+           alert('ERROR');
+           console.log(resultat, statut, erreur);
+         },
+         complete : function(resultat, statut){
+
+         }
+    });
+  });
+});
+  })( jQuery );
 ";
 
 
