@@ -31,31 +31,40 @@
 
 $( window ).load(function() {
 		var plugin_dir_url = $('#plugin_dir_url').val();
-		$('#event_log_in').click(function(){
+		$('.event_log_in').click(function(){
 	    $.ajax({
 	         url : plugin_dir_url+'user/openbooking-public-log-in.php',
 	         type : 'POST',
-	         data : 'email=' + email_log.value + '&password=' + password.value,
+	         data : 'email=' + $(this).siblings('.email').val() + '&password=' + $(this).siblings('.password').val(),
 	         success : function(code_html, statut){
-	           $('#event_server_message').html(code_html);
+						 $(this).siblings('.event_server_message').html();
+						 if(code_html){
+							 $('.event_server_message').html(code_html);
+						 }else{
+							 location.reload();
+						 }
 	         },
 	         error : function(resultat, statut, erreur){
-	           alert('ERROR');
+		        // $('#event_server_message').html(erreur);
 	           console.log(resultat, statut, erreur);
 	         },
 	         complete : function(resultat, statut){
-
 	         }
 	    });
 	  });
 
-	  $('#event_sign_in').click(function(){
+	  $('.event_sign_in').click(function(){
 	    $.ajax({
 	         url : plugin_dir_url+'user/openbooking-public-sign-in.php',
 	         type : 'POST',
-	         data : 'first_name=' + first_name.value + '&last_name=' + last_name.value + '&email=' + email.value + '&password_first=' + password1.value + '&password_second=' + password2.value,
+	         data : 'first_name=' + $(this).siblings('.first_name').val() + '&last_name=' + $(this).siblings('.last_name').val() + '&email=' + $(this).siblings('.email').val() + '&password_first=' + $(this).siblings('.password1').val() + '&password_second=' + $(this).siblings('.password2').val() ,
 	         success : function(code_html, statut){
-	           $('#event_server_message').html(code_html);
+						 $(this).siblings('.event_server_message').html();
+						 if(code_html){
+							 $('.event_server_message').html(code_html);
+						 }else{
+							 location.reload();
+						 }
 	         },
 	         error : function(resultat, statut, erreur){
 	           console.log(resultat, statut, erreur);
@@ -63,15 +72,15 @@ $( window ).load(function() {
 	         complete : function(resultat, statut){
 
 	         }
-	    });
+			});
 	  });
 
-	  $('#event_log_out').click(function(){
+	  $('.event_log_out').click(function(){
 	    $.ajax({
 	         url : plugin_dir_url+'user/openbooking-public-log-out.php',
 	         type : 'POST',
 	         success : function(code_html, statut){
-	           $('#event_server_message').html(code_html);
+	           location.reload();
 	         },
 	         error : function(resultat, statut, erreur){
 	           alert('ERROR');
@@ -83,7 +92,7 @@ $( window ).load(function() {
 	    });
 	  });
 
-	  $('#event_leave').click(function(){
+	  $('.event_leave').click(function(){
 	    $.ajax({
 	         url : plugin_dir_url+'event/openbooking-public-leave.php',
 	         type : 'POST',
@@ -100,7 +109,7 @@ $( window ).load(function() {
 	    });
 	  });
 
-	  $('#event_join').click(function(){
+	  $('.event_join').click(function(){
 	    $.ajax({
 	         url : plugin_dir_url+'event/openbooking-public-join.php',
 	         type : 'POST',

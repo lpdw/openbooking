@@ -13,9 +13,8 @@ if (strtolower(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) === 'xmlhttp
 
       if($email=="" || $password=="")
       {
-        echo $email.' email';
-        echo $password.' password';
-        echo 'Merci de vérifier tous les champs avant de soumettre le formulaire. A';
+
+        echo '<div class="event_error">Merci de vérifier tous les champs avant de soumettre le formulaire.</div>';
       } else {
         // if(connect($login,$password)){
         //   $_SESSION['mail'] = $login;
@@ -29,10 +28,9 @@ if (strtolower(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) === 'xmlhttp
           $_SESSION['first_name'] = 'Matthieu';
           $_SESSION['last_name']  = 'Test';
 
-           echo 'Votre compte vient dêtre crée !';
       }
     } else {
-      echo 'Merci de vérifier tous les champs avant de soumettre le formulaire. T';
+            echo '<div class="event_error">Merci de vérifier tous les champs avant de soumettre le formulaire.</div>';
     }
   }
 } else {

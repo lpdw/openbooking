@@ -49,7 +49,7 @@ class Openbooking_ListEvents
 	$html[] = '<div class="event_list_header">';
 	if(isset($_SESSION['id']))
 	{
-	$html[] = '<p>'.$_SESSION['email'].' <button id="event_log_out"> Se Déconnecter </button> </p>';
+	$html[] = '<p> '.$_SESSION['first_name'].' '.$_SESSION['last_name'].' <button class="event_log_out"> Se Déconnecter </button> </p>';
 	}
 	$html[] = '</div>';
 
@@ -122,7 +122,7 @@ class Openbooking_ListEvents
           $html[] = '<div class="more">';
           $html[] = '<p> Are you sure you wanna leave this event ? </p>';
           $html[] = '<button class="btn_cancel"> No </button>';
-          $html[] = '<button id="event_leave"> Yes </button>';
+          $html[] = '<button class="event_leave"> Yes </button>';
           $html[] = '</div>';
           $html[] = '<button class="btn_change"> Leave </button>';
         } else {
@@ -131,22 +131,32 @@ class Openbooking_ListEvents
           $html[] = '<button id="event_join"> Join </button>';
         	} else {
 	          $html[] = '<h3> All seats are taken. </h3>';
-	          $html[] = '<button id="event_alert"> Be alerted if someone leaves.</button>';
+	          $html[] = '<button class="event_alert"> Be alerted if someone leaves.</button>';
 	        }
       	}
       } else {
-        $html[] = '<p>Sorry you must have an account if you want to join an event!</p>';
-
         $html[] = '<div class="sign-in">';
         $html[] = '<div class="more">';
         $html[] = '<form onsubmit="return false;">';
-        $html[] = '<label for="first_name"> Firstname: </label> <input id="first_name" name="first_name" type="text" placeholder="Firstname"/>';
-        $html[] = '<label for="last_name"> Lastname: </label> <input id="last_name" name="last_name" type="text" placeholder="Lastname"/>';
-        $html[] = '<label for="email"> Email: </label> <input id="email" name="email" type="email" placeholder="Email"/>';
-        $html[] = '<label for="password1"> Password: </label> <input id="password1" name="password1" type="password" placeholder="Password"/>';
-        $html[] = '<label for="password2"> Your password again: </label> <input id="password2" name="password2" type="password" placeholder="Password"/>';
-        $html[] = '<button class="btn_cancel"> Close </button>';
-        $html[] = '<button id="event_sign_in"> Sign in </button>';
+        $html[] = '<div class="event_server_message"></div>';
+
+        $html[] = '<label for="event_list_first_name_'.$event['id'].'"> Firstname: </label>';
+				$html[] = '<input id="event_list_first_name_'.$event['id'].'" class="first_name" name="first_name" type="text" placeholder="Firstname"/>';
+
+        $html[] = '<label for="event_list_last_name_'.$event['id'].'"> Lastname: </label> ';
+				$html[] = '<input id="event_list_last_name_'.$event['id'].'" class="last_name" name="last_name" type="text" placeholder="Lastname"/>';
+
+        $html[] = '<label for="event_list_email_'.$event['id'].'"> Email: </label>';
+				$html[] = '<input id="event_list_email_'.$event['id'].'" class="email" name="email" type="email" placeholder="Email"/>';
+
+        $html[] = '<label for="event_list_password1_'.$event['id'].'"> Password: </label>';
+				$html[] = '<input id="event_list_password1_'.$event['id'].'" class="password1" name="password1" type="password" placeholder="Password"/>';
+
+				$html[] = '<label for="event_list_password2_'.$event['id'].'"> Your password again: </label>';
+				$html[] = '<input id="event_list_password2_'.$event['id'].'" class="password2" name="password2" type="password" placeholder="Password"/>';
+
+				$html[] = '<button class="btn_cancel"> Close </button>';
+        $html[] = '<button class="event_sign_in"> Sign in </button>';
         $html[] = '</form>';
         $html[] = '</div>';
         $html[] = '<button class="btn_change"> Sign in </button>';
@@ -155,10 +165,17 @@ class Openbooking_ListEvents
         $html[] = '<div class="log-in">';
         $html[] = '<div class="more">';
         $html[] = '<form onsubmit="return false;">';
-        $html[] = '<label for="email_log"> Email: </label> <input id="email_log" name="email_log" type="email" placeholder="Email"/>';
-        $html[] = '<label for="password"> Password: </label> <input id="password" name="password" type="password" placeholder="password"/>';
+        $html[] = '<div class="event_server_message"></div>';
+
+        $html[] = '<label for="event_list_email_log_'.$event['id'].'"> Email: </label>';
+				$html[] = '<input id="event_list_email_log_'.$event['id'].'" class="email" name="email_login" type="email" placeholder="Email"/>';
+
+        $html[] = '<label for="event_list_password_'.$event['id'].'"> Password: </label>';
+				$html[] = '<input id="event_list_password_'.$event['id'].'" class="password" name="password" type="password" placeholder="password"/>';
+
         $html[] = '<button class="btn_cancel"> Close </button>';
-        $html[] = '<button id="event_log_in"> Log in </button>';
+        $html[] = '<button class="event_log_in"> Log in </button>';
+
         $html[] = '</form>';
         $html[] = '</div>';
         $html[] = '<button class="btn_change"> Log in </button>';
@@ -179,6 +196,7 @@ class Openbooking_ListEvents
 	$html[] = '</ul>';
 
 	$html[] = '<div class="event_list_footer">';
+
 	$html[] = '</div>';
 
 	echo implode('', $html);
