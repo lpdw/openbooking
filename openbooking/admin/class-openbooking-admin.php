@@ -10,6 +10,9 @@
  * @subpackage Openbooking/admin
  */
 
+use OpenBooking\_Class\Metier\Participant;
+use OpenBooking\_Class\Metier\Event;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -114,6 +117,7 @@ class Openbooking_Admin {
 		 * class.
 		 */
 
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'vendor/modernizr-custom.min.js', array( 'jquery' ), '3.2.0', false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/openbooking-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
@@ -135,6 +139,26 @@ class Openbooking_Admin {
 			'dashicons-calendar-alt'
 		);
 
+		// Events page
+		add_submenu_page(
+			'openbooking',
+			__( 'Openbooking Events', $this->plugin_name ),
+			__( 'Events', $this->plugin_name ),
+			'manage_options',
+			'openbooking-events',
+			array( $this, 'display_events_page' )
+		);
+
+		// Add Event page
+		add_submenu_page(
+			'openbooking',
+			__( 'Openbooking Add Event', $this->plugin_name ),
+			__( 'Add Event', $this->plugin_name ),
+			'manage_options',
+			'openbooking-new-event',
+			array( $this, 'display_new_event_page' )
+		);
+
 		// Participants page
 		add_submenu_page(
 			'openbooking',
@@ -145,14 +169,14 @@ class Openbooking_Admin {
 			array( $this, 'display_participants_page' )
 		);
 
-		// Events page
+		// Add Participant page
 		add_submenu_page(
 			'openbooking',
-			__( 'Openbooking Events', $this->plugin_name ),
-			__( 'Events', $this->plugin_name ),
+			__( 'Openbooking Add Participant', $this->plugin_name ),
+			__( 'Add Participant', $this->plugin_name ),
 			'manage_options',
-			'openbooking-events',
-			array( $this, 'display_events_page' )
+			'openbooking-new-participant',
+			array( $this, 'display_new_participant_page' )
 		);
 
 		// Newsletter page
@@ -192,7 +216,13 @@ class Openbooking_Admin {
 	 * @since   1.0.0
 	 */
 	public function display_participants_page() {
+		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Participant.php');
 		include_once('partials/openbooking-participants-class.php');
+
+		/* DEV TEST BLOCK TODO : delete me */
+		//Participant::add('Toto','MICHEL','michel.toto@gmail.com','password');
+		//Participant::add('Gabe','NEWELL','praiselordgaben@gmail.com','password');
+		/* DEV TEST BLOCK */
 
 		//add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 10, 3 );
 		$this->participants_obj = new obParticipantsTable();
@@ -206,12 +236,29 @@ class Openbooking_Admin {
 	 * @since   1.0.0
 	 */
 	public function display_events_page() {
+		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Event.php');
 		include_once('partials/openbooking-events-class.php');
+
+		//$date1 = new DateTime('2000-01-01');
+		//$date2 = new DateTime();
+		/* DEV TEST BLOCK TODO : delete me */
+		//Event::add('Steam Sales','Praise Lord Gaben, Steam Sales are coming ! Shut up and get my money ! Spaces go with ionic cannon! This devastation has only been invaded by a harmless starship. The phenomenan is more parasite now than star. unrelated and impressively delighted.','France','2000-01-01',22,'Gabe Newell','lordgaben@gmail.com',true);
+		//Event::add('Galette des Rois','Parce que la frangipane, il n\'y a que ça de vrai ! Leek smoothie has to have a delicious, puréed cauliflower component. Crême fraîche soup is just not the same without woodruff and shredded old rice. Try toasting cabbage sauce enameled with chicken lard sauce.','Paris','2015-01-02',10,'Les Rois','leskingsdelastreet@gmail.com',false);
+		/* DEV TEST BLOCK */
 
 		//add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 10, 3 );
 		$this->events_obj = new obEventsTable();
 
 		include_once( 'partials/openbooking-events-display.php' );
+	}
+
+	/**
+	 * Display New Event page content.
+	 *
+	 * @since   1.0.0
+	 */
+	public function display_new_event_page() {
+		include_once( 'partials/openbooking-new-event-display.php' );
 	}
 
 	/**

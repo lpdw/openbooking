@@ -9,6 +9,7 @@ Copier le dossier `openbooking` dans `wp-content\plugins` et activer le plugin.
 
 ## Dev
 
+Pour initialiser les submodules après : `git submodule update --init --recursive`
 Pour mettre à jour les submodules : `git submodule update --remote`
 
 ## Installation d'un environment de test

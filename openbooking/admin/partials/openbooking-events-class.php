@@ -1,4 +1,5 @@
 <?php
+//require_once ('dBug.php');
 if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
@@ -76,7 +77,7 @@ if ( !class_exists( 'obEventsTable' ) ) {
             return $result;
 
             */
-            $result = array(
+            /*$result = array(
                 array(
                     "id"=>"1",
                     "name"=>"Steam Sales",
@@ -117,7 +118,21 @@ if ( !class_exists( 'obEventsTable' ) ) {
                     "open_to_registration"=> 1,
                     "canceled"=> 0
                 )
-            );
+            );*/
+
+            function convertToArray(&$item , $key)
+            {
+                $item = (array) $item ;
+            }
+
+            $allevents_obj = \OpenBooking\_Class\Metier\Event::getAll(true);
+
+            array_walk($allevents_obj, 'convertToArray');
+
+            $result = $allevents_obj;
+
+            new dBug($result);
+
 
             if ( ! empty( $_REQUEST['orderby'] ) ) {
                 if ($_REQUEST['order']=="ASC") {

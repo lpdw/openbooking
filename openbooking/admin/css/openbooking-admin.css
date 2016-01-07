@@ -2,3 +2,19 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+/**
+ * Add New Event Page
+ */
+#event-info label:not(.radiolabel) {
+    position: relative;
+    display: block;
+    padding-top: 0.5em;
+    margin-bottom: 1.5em;
+}
+
+#event-info label input {
+    position: absolute;
+    left: 120px;
+    top: 0;
+}

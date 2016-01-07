@@ -1,5 +1,4 @@
 <?php
-//TODO : api integration
 //TODO : sorting + screen options like hide/show columns
 if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'WP_List_Table' ) ) {
@@ -36,28 +35,6 @@ if ( !class_exists( 'obParticipantsTable' ) ) {
          * @return mixed
          */
         public static function get_participants( $per_page = 5, $page_number = 1 ) {
-            /*
-            // The wordpress way, for exemple only :
-
-            global $wpdb;
-
-            $sql = "SELECT * FROM {$wpdb->prefix}customers";
-
-            if ( ! empty( $_REQUEST['orderby'] ) ) {
-                $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-                $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
-            }
-
-            $sql .= " LIMIT $per_page";
-
-            $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
-
-
-            $result = $wpdb->get_results( $sql, 'ARRAY_A' );
-
-            return $result;
-
-            */
             $result = array(
                 array(
                     "id"=>"1",
@@ -85,6 +62,29 @@ if ( !class_exists( 'obParticipantsTable' ) ) {
                 )
             );
 
+            /*
+            // The wordpress way, for exemple only :
+
+            global $wpdb;
+
+            $sql = "SELECT * FROM {$wpdb->prefix}customers";
+
+            if ( ! empty( $_REQUEST['orderby'] ) ) {
+                $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
+                $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
+            }
+
+            $sql .= " LIMIT $per_page";
+
+            $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
+
+
+            $result = $wpdb->get_results( $sql, 'ARRAY_A' );
+
+            return $result;
+
+            */
+
             if ( ! empty( $_REQUEST['orderby'] ) ) {
                 if ($_REQUEST['order']=="ASC") {
                     $result = asort($result);
@@ -95,7 +95,6 @@ if ( !class_exists( 'obParticipantsTable' ) ) {
                 }
             }
 
-            return $result;
 
         }
 
