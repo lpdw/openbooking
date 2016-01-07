@@ -1,18 +1,18 @@
 <?php
-session_start();
 
-class Openbooking_ShowEvent
+class Openbooking_ListEvents
 {
-    public function __construct()
-    {
-        add_shortcode('openbooking_show_event', array($this, 'show_event_html'));
-    }
+	public function __construct()
+	{
+			add_shortcode('openbooking_list_events', array($this, 'list_events_html'));
+	}
 
-    public function show_event_html($atts, $content)
-    {
-    $atts = shortcode_atts(array('id' => '1'), $atts);
-    //$event = get_event_by_ID($atts);
-    $event = array('id'     => 1,
+	public function list_events_html($atts, $content)
+	{
+	$atts = shortcode_atts(array('id' => '1'), $atts);
+	//$events = get_events_by_ID($atts);
+	$events = array(
+		array('id'     => 1,
     'name'                  => 'Initiation Domotique',
     'description'           => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam volutpat consequat mi, non sodales massa laoreet quis. Mauris ac elit vitae orci porta rutrum ac non neque. Aliquam blandit lorem in dictum molestie. Nunc vel ultricies arcu, vitae commodo sem. Phasellus iaculis orci enim, a tempor sem congue eleifend. Vestibulum iaculis porttitor congue. Vivamus ut quam id massa rhoncus vehicula id sit amet orci.',
     'localisation_name'     => 'FacLab',
@@ -26,38 +26,51 @@ class Openbooking_ShowEvent
     'cancelled'             => false,
     'participants_max'      => 4,
     'participants_registred'=> 3,
-    'participating_to_this_event' => false);
+		'participating_to_this_event' => false),
+		array('id'     => 2,
+    'name'                  => 'Initiation Papier Peint',
+    'description'           => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam volutpat consequat mi, non sodales massa laoreet quis. Mauris ac elit vitae orci porta rutrum ac non neque. Aliquam blandit lorem in dictum molestie. Nunc vel ultricies arcu, vitae commodo sem. Phasellus iaculis orci enim, a tempor sem congue eleifend. Vestibulum iaculis porttitor congue. Vivamus ut quam id massa rhoncus vehicula id sit amet orci.',
+    'localisation_name'     => 'Tour Eiffel',
+    'localisation_lat'      => '48.9358093',
+    'localisation_lng'      => '2.3032078',
+    'date'                  => '2016-12-24 15:00:00',
+    'organizer'             => 'Valérie Damido',
+    'organizer_email'       => 'toto@toto.fr',
+    'creation_date'         => '2016-01-04 15:00:00',
+    'open_to_registration'  => true,
+    'cancelled'             => false,
+    'participants_max'      => 4,
+    'participants_registred'=> 4,
+		'participating_to_this_event' => true)
+	);
 
-    // check if a user is connected
-    if(isset($_SESSION['id']))
-    {
-      // If yes, ask to db if he is actually partipating to this event
-      // $participate_to_this_event will be true if he is particpating or false if he doesn't
-      //$participate_to_this_event = is_participating($user['id']);
-      $participating_to_this_event = false;
-    }
+	$html = array();
 
-    $html = array();
+	$html[] = '<div class="event_list_header">';
+	if(isset($_SESSION['id']))
+	{
+	$html[] = '<p>'.$_SESSION['email'].' <button id="event_log_out"> Se Déconnecter </button> </p>';
+	}
+	$html[] = '</div>';
 
-    $html[] = '<div id="event_'.$event['id'].'" class="event">';
-    $html[] = '<div class="event_header">';
-    if(isset($_SESSION['id']))
-    {
-    $html[] = '<p>'.$_SESSION['email'].' <button id="event_log_out"> Se Déconnecter </button> </p>';
-    }
+	$html[] = '<ul class="event_list_content">';
+	foreach ($events as $event)
+	{
+		$html[] = '<li class="event_list_element">';
+
+		$html[] = '<div class="element_header">';
     $html[] = '<h4 class="event_name">'.$event['name'].'</h4>';
     $html[] = '<p class="event_information"> Organizer: <a href="mailto:'.$event['organizer_email'].'"> '.$event['organizer'].' </a> <br/>
     Location: '.$event['localisation_name'].'<br/>
     Date: '.$event['date'].'</p>';
-    $html[] = '</div>';
+		$html[] = '</div>';
 
-    $html[] = '<div class="event_content">';
+		$html[] = '<div class="element_content">';
     $html[] = '<p class="event_description">'.$event['description'].'</p>';
-    $html[] = $content;
     $html[] = "<script>
-    var map_".$event['id']." ;
-    function initialize_map_".$event['id']."() {
-      map_".$event['id']." = new google.maps.Map(document.getElementById('event_map_".$event['id']."'), {
+    var map_list_event_".$event['id'].";
+    function initialize_map_list_element_".$event['id']."() {
+      map_list_event_".$event['id']." = new google.maps.Map(document.getElementById('event_map_list_element_".$event['id']."'), {
         center: {lat: 46.2276380, lng: 2.2137490},
         zoom: 2
       });
@@ -67,21 +80,22 @@ class Openbooking_ShowEvent
         query: '".$event['localisation_name']."'
       };
 
-      var service = new google.maps.places.PlacesService(map_".$event['id'].");
-      service.textSearch(request_".$event['id'].", callback);
+
+      var service = new google.maps.places.PlacesService(map_list_event_".$event['id'].");
+      service.textSearch(request_".$event['id'].", callback_list_event_".$event['id'].");
 
     }
 
     // Checks that the PlacesServiceStatus is OK, and adds a marker
     // using the place ID and location from the PlacesService.
-    function callback(results, status) {
+    function callback_list_event_".$event['id']."(results, status) {
       // We check if Google know the place
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         // If a place is found
-        map_".$event['id'].".setCenter(results[0].geometry.location);
-        map_".$event['id'].".setZoom(18);
+        map_list_event_".$event['id'].".setCenter(results[0].geometry.location);
+        map_list_event_".$event['id'].".setZoom(18);
         var marker = new google.maps.Marker({
-          map: map_".$event['id'].",
+          map: map_list_event_".$event['id'].",
           place: {
             placeId: results[0].place_id,
             location: results[0].geometry.location
@@ -90,18 +104,19 @@ class Openbooking_ShowEvent
       } else {
         // if not we check for a physical address
         var geocoder = new google.maps.Geocoder();
-        geocodeAddress(geocoder, map_".$event['id'].", '{lat:".$event['localisation_lat'].", lng:".$event['localisation_lng']."}');
+        geocodeAddress(geocoder, map_list_event_".$event['id'].", '{lat:".$event['localisation_lat'].", lng:".$event['localisation_lng']."}');
       }
     }
 
-    google.maps.event.addDomListener(window, 'load', initialize_map_".$event['id'].");</script>";
-    $html[] = '<div id="event_map_'.$event['id'].'" style="height:200px;"></div>';
-    $html[] = '</div>';
+    google.maps.event.addDomListener(window, 'load', initialize_map_list_element_".$event['id'].");</script>";
+    $html[] = '<div id="event_map_list_element_'.$event['id'].'" style="height:200px;"></div>';
+		$html[] = '</div>';
 
-    $html[] = '<div class="event_footer">';
+		$html[] = '<div class="element_footer">';
     if($event['open_to_registration'] && !$event['cancelled'])
     {
-      if(isset($_SESSION['id'])&&!$event['cancelled']&&$event['open_to_registration']){
+      if(isset($_SESSION['id'])&&!$event['cancelled']&&$event['open_to_registration'])
+			{
         if($event['participating_to_this_event']){
           $html[] = '<p>You are participating to this event.</p>';
           $html[] = '<div class="more">';
@@ -158,9 +173,14 @@ class Openbooking_ShowEvent
       $html[] = '<p> Registrations close </p>';
     }
     $html[] = '</div>';
+		$html[] = '</li>';
+		$html[] = '<hr/>';
+	}
+	$html[] = '</ul>';
 
-    $html[] = '</div>';
+	$html[] = '<div class="event_list_footer">';
+	$html[] = '</div>';
 
-    echo implode('', $html);
-  }
+	echo implode('', $html);
+	}
 }

@@ -14,3 +14,4 @@
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
+<input type="hidden" id="plugin_dir_url" value="<?php echo plugin_dir_url(__FILE__); ?>"/>
