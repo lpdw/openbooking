@@ -54,11 +54,8 @@ class Openbooking_Public {
 
 		include_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-display.php';
 
-		include_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-show-event.php';
-    new Openbooking_ShowEvent();
-
-		include_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-list-event.php';
-    new Openbooking_ListEvents();
+		include_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-event.php';
+    new Openbooking_Public_Event();
 
 	}
 
