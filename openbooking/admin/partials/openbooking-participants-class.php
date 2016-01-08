@@ -35,32 +35,7 @@ if ( !class_exists( 'obParticipantsTable' ) ) {
          * @return mixed
          */
         public static function get_participants( $per_page = 5, $page_number = 1 ) {
-            $result = array(
-                array(
-                    "id"=>"1",
-                    "first_name"=>"Toto",
-                    "last_name"=>"André",
-                    "email"=>"toto@gmail.com",
-                    "registration_date"=>"2016-01-01",
-                    "status"=>"ban"
-                ),
-                array(
-                    "id"=>"2",
-                    "first_name"=>"Tata",
-                    "last_name"=>"Michelle",
-                    "email"=>"tata@gmail.com",
-                    "registration_date"=>"2016-01-01",
-                    "status"=>"verified"
-                ),
-                array(
-                    "id"=>"3",
-                    "first_name"=>"Gabe",
-                    "last_name"=>"Newell",
-                    "email"=>"praiselordgaben@gmail.com",
-                    "registration_date"=>"2016-01-06",
-                    "status"=>"unverified"
-                )
-            );
+
 
             /*
             // The wordpress way, for exemple only :
@@ -85,15 +60,24 @@ if ( !class_exists( 'obParticipantsTable' ) ) {
 
             */
 
-            if ( ! empty( $_REQUEST['orderby'] ) ) {
-                if ($_REQUEST['order']=="ASC") {
-                    $result = asort($result);
-                } elseif ($_REQUEST['order']=="DSC") {
-                    $result = arsort($result);
-                } else {
-                    echo __('Error while trying to sort' , 'openbooking');
+            if (isset($_REQUEST['paged'])) {
+                $page_number = $_REQUEST['paged'];
+            }
+
+
+            if ( !function_exists('convertToArray')){
+                function convertToArray(&$item, $key) {
+                    $item = (array)$item;
                 }
             }
+
+            $allparticipants_obj = \OpenBooking\_Class\Metier\Participant::getAll($per_page,$page_number);
+
+            array_walk($allparticipants_obj, 'convertToArray');
+
+            $result = $allparticipants_obj;
+
+            return $result;
 
 
         }
@@ -125,18 +109,10 @@ if ( !class_exists( 'obParticipantsTable' ) ) {
          * @return null|string
          */
         public static function record_count() {
-            /*
-            // The wordpress way, for exemple only :
 
-            global $wpdb;
+            $result = count(\OpenBooking\_Class\Metier\Participant::getAll());
+            return $result;
 
-            $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}customers";
-
-            return $wpdb->get_var( $sql );
-
-            */
-
-            return 3;
         }
 
         /** Text displayed when no data is available */
@@ -179,10 +155,11 @@ if ( !class_exists( 'obParticipantsTable' ) ) {
             switch ( $column_name ) {
                 case 'first_name':
                 case 'last_name':
-                case 'email':
                 case 'registration_date':
                 case 'status':
                     return $item[ $column_name ];
+                case 'email':
+                    return '<a href="mailto:'.$item[ 'email' ].'">'.$item[ $column_name ].'</a>';
                 default:
                     return print_r( $item, true ); //Show the whole array for troubleshooting purposes
             }

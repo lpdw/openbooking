@@ -242,7 +242,7 @@ class Openbooking_Admin {
 		//$date1 = new DateTime('2000-01-01');
 		//$date2 = new DateTime();
 		/* DEV TEST BLOCK TODO : delete me */
-		//Event::add('Steam Sales','Praise Lord Gaben, Steam Sales are coming ! Shut up and get my money ! Spaces go with ionic cannon! This devastation has only been invaded by a harmless starship. The phenomenan is more parasite now than star. unrelated and impressively delighted.','France','2000-01-01',22,'Gabe Newell','lordgaben@gmail.com',true);
+		//Event::add('Dsfgrg','Praise Lord Gaben, Steam Sales are coming ! Shut up and get my money ! Spaces go with ionic cannon! This devastation has only been invaded by a harmless starship. The phenomenan is more parasite now than star. unrelated and impressively delighted.','France','2010-01-11 23:25:22',20,'Gabe Newell','lordgaben@gmail.com',true);
 		//Event::add('Galette des Rois','Parce que la frangipane, il n\'y a que ça de vrai ! Leek smoothie has to have a delicious, puréed cauliflower component. Crême fraîche soup is just not the same without woodruff and shredded old rice. Try toasting cabbage sauce enameled with chicken lard sauce.','Paris','2015-01-02',10,'Les Rois','leskingsdelastreet@gmail.com',false);
 		/* DEV TEST BLOCK */
 
@@ -259,6 +259,36 @@ class Openbooking_Admin {
 	 */
 	public function display_new_event_page() {
 		include_once( 'partials/openbooking-new-event-display.php' );
+	}
+
+	/**
+	 * Hook for adding a new event.
+	 *
+	 * @since   1.0.0
+	 */
+	public function new_event_hook() {
+		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Event.php');
+
+		if (isset($_REQUEST['publish'])) {
+			$event = array(
+				'publish' => $_REQUEST['publish'],
+				'open_to_registration' => $_REQUEST['open_to_registration'],
+				'name' => $_REQUEST['name'],
+				'date' => $_REQUEST['date'],
+				'localisation' => $_REQUEST['localisation'],
+				'participants_max' => $_REQUEST['participants_max'],
+				'organizer' => $_REQUEST['organizer'],
+				'organizer_email' => $_REQUEST['organizer_email'],
+				'description' => $_REQUEST['description']
+			);
+
+			Event::add($event['name'],$event['description'],$event['localisation'],$event['date'],$event['participants_max'],$event['organizer'],$event['organizer_email'],$event['open_to_registration']);
+
+			wp_redirect(admin_url('admin.php?page=openbooking-new-event&success=true'));
+
+		} else {
+			die('Error');
+		}
 	}
 
 	/**

@@ -1,6 +1,9 @@
 #Ignore test folder
 test/
 
+# Ignore api conf.ini , use installation tool ( php installation/index.php )
+openbooking/openbooking-api/conf.ini
+
 # Created by https://www.gitignore.io/api/windows,linux,osx,intellij,netbeans,sublimetext,wordpress,phpstorm,notepadpp
 
 ### Windows ###
