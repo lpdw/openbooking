@@ -1,18 +1,15 @@
 <?php
-  session_start();
+session_start();
 
 if (strtolower(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest') {
 
 
-  if(isset($_SESSION['id']))
+  if(isset($_SESSION['openbooking_user']))
   {
-
-   $_SESSION = array();
-
-   session_destroy();
+      unset($_SESSION['openbooking_user']);
 
  }
 
 } else {
-  header ("Location: $_SERVER[HTTP_REFERER]" );
+    die;
 }

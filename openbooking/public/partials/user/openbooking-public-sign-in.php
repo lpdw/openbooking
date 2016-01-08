@@ -1,10 +1,14 @@
 <?php
-  session_start();
+session_start();
+
+require_once (dirname(__FILE__). '/../../../openbooking-api/autoload.php');
+use OpenBooking\_Class\Metier\Participant;
+use OpenBooking\_Exceptions\DataAlreadyExistInDatabaseException;
 
 if (strtolower(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest') {
 
 
-  if(!isset($_SESSION['id']))
+  if(!isset($_SESSION['openbooking_user']))
   {
     if(isset($_POST['first_name'])&&isset($_POST['last_name'])&&isset($_POST['email'])&&isset($_POST['password_first'])&&isset($_POST['password_second']))
     {
@@ -18,24 +22,34 @@ if (strtolower(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) === 'xmlhttp
       {
         echo '<div class="event_error">Merci de vérifier tous les champs avant de soumettre le formulaire.</div>';
       } else {
-        // if(connect($login,$password)){
-        //   $_SESSION['mail'] = $login;
-        //   echo 'Votre compte vient dêtre crée !';
-        // } else {
-        //   echo 'Mauvais identifiants !';
-        // }
 
-          $_SESSION['id']         = '1';
-          $_SESSION['email']      = $email;
-          $_SESSION['first_name'] = $first_name;
-          $_SESSION['last_name']  = $last_name;
+        try{
+          Participant::add($first_name, $last_name, $email, $password_first);
+        } catch(DataAlreadyExistInDatabaseException $e){
+          $error = "Email déjà prise.";
+        } catch(Exception $e){
+          $error = "Merci de vérifier tous les champs avant de soumettre le formulaire.";
+        }
+
+        if (isset($error))
+        {
+          echo '<div class="event_error">'.$error.'</div>';
+        } else {
+          $user = new Participant($email, $password_first);
+          $_SESSION['openbooking_user'] = array(
+              'id' => $user->getId(),
+              'email' => $user->getEmail(),
+              'password' => $password_first
+          );
+          //TODO Manière moins crade de stocker les infos user
+        }
       }
     } else {
       echo '<div class="event_error">Merci de vérifier tous les champs avant de soumettre le formulaire.</div>';
     }
   }
-} else {
-  header ("Location: $_SERVER[HTTP_REFERER]" );
+}  else {
+  die;
 }
 
 function test_input($data) {

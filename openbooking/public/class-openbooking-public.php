@@ -52,10 +52,9 @@ class Openbooking_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		include_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-display.php';
-
-		include_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-event.php';
-    new Openbooking_Public_Event();
+		require_once (plugin_dir_path( __FILE__ ). '../openbooking-api/autoload.php');
+		require_once plugin_dir_path( __FILE__ ).'partials/openbooking-public-event.php';
+		new Openbooking_Public_Event();
 
 	}
 
