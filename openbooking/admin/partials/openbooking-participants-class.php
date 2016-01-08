@@ -187,8 +187,8 @@ if ( !class_exists( 'obParticipantsTable' ) ) {
         function get_columns() {
             $columns = [
                 'cb'      => '<input type="checkbox" />',
-                'first_name'    => __( 'Firstame', 'openbooking' ),
-                'last_name'    => __( 'Lastame', 'openbooking' ),
+                'first_name'    => __( 'First name', 'openbooking' ),
+                'last_name'    => __( 'Last name', 'openbooking' ),
                 'email' => __( 'Email', 'openbooking' ),
                 'registration_date' => __( 'Registration Date', 'openbooking' ),
                 'status' => __( 'Status', 'openbooking' )

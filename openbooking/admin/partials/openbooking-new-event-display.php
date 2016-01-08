@@ -36,7 +36,7 @@ if (isset($_GET['id']) && $_GET['action']=='edit') {
     <h2><?php _e( 'Openbooking New Event', 'openbooking' ); ?></h2>
     <p><?php _e( 'Add New Event', 'openbooking' ); ?></p>
 
-    <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+    <form method="post" action="<?php echo admin_url('admin-post.php?type=event'); ?>">
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">
                 <div id="post-body-content">
@@ -83,7 +83,7 @@ if (isset($_GET['id']) && $_GET['action']=='edit') {
                                                 <input type="hidden" name="action" value="custom_form_submit">
                                                 <input type="hidden" name="data" value="id">
                                                 <input type="hidden" name="id" value="<?php if(isset($id)) { echo $id; } ?>">
-                                                <input type="submit" name="<?php if (isset($id)) { ?>save<?php } else { ?>publish<?php } ?>" id="publish" class="button button-primary button-large" value="<?php if (isset($id)) { ?> Update Event <?php } else { ?> Add Event <?php } ?>"></div>
+                                                <input type="submit" name="<?php if (isset($id)) { ?>save<?php } else { ?>publish<?php } ?>" id="publish" class="button button-primary button-large" value="<?php if (isset($id)) { ?>Update Event<?php } else { ?>Add Event<?php } ?>"></div>
                                             <div class="clear"></div>
                                         </div>
                                     </div>
