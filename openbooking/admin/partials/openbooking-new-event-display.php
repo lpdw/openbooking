@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Provide a admin area view for the plugin
  *
@@ -13,11 +12,20 @@
  */
 
 if (isset($_GET['success'])) {
-    if ($_GET['success'] == true) {
+    if ($_GET['success'] == "addok") {
         echo "<script>alert('Event added with success !');</script>";
+    } elseif($_GET['success'] == "updateok") {
+        echo "<script>alert('Event updated with success !');</script>";
     } else {
-        echo "<script>alert('Error : event not added !');</script>";
+        echo "<script>alert('Error : event not added or updated');</script>";
     }
+}
+
+$event_array = array('id'=>null,'name'=>null, 'description'=>null, 'localisation'=>null, 'date'=>null, 'participants_max'=>null, 'organizer'=>null, 'organizer_email'=>null, 'creation_date'=>null, 'open_to_registration'=>null, 'cancelled'=>null);
+if (isset($_GET['id']) && $_GET['action']=='edit') {
+    $id = $_GET['id'];
+    $event_obj = new \OpenBooking\_Class\Metier\Event($id);
+    $event_array = (array)$event_obj->get();
 }
 ?>
 
@@ -50,13 +58,13 @@ if (isset($_GET['success'])) {
 
                                                         <div class="radio">
                                                             <label for="open-1" class="radiolabel">
-                                                                <input type="radio" name="open_to_registration" id="open-1" value="1" checked="checked">
+                                                                <input type="radio" name="open_to_registration" id="open-1" value="1" <?php if( $event_array['open_to_registration'] == 1 || is_null($event_array['open_to_registration'])) : ?>checked="checked"<?php endif; ?>>
                                                                 Yes
                                                             </label>
                                                         </div>
                                                         <div class="radio">
                                                             <label for="open-0" class="radiolabel">
-                                                                <input type="radio" name="open_to_registration" id="open-0" value="0">
+                                                                <input type="radio" name="open_to_registration" id="open-0" value="0" <?php if( $event_array['open_to_registration'] == 0 && !is_null($event_array['open_to_registration'])) : ?>checked="checked"<?php endif; ?>>
                                                                 No
                                                             </label>
                                                         </div>
@@ -74,7 +82,8 @@ if (isset($_GET['success'])) {
                                                 <span class="spinner" deluminate_imagetype="gif"></span>
                                                 <input type="hidden" name="action" value="custom_form_submit">
                                                 <input type="hidden" name="data" value="id">
-                                                <input type="submit" name="publish" id="publish" class="button button-primary button-large" value="Add Event"></div>
+                                                <input type="hidden" name="id" value="<?php if(isset($id)) { echo $id; } ?>">
+                                                <input type="submit" name="<?php if (isset($id)) { ?>save<?php } else { ?>publish<?php } ?>" id="publish" class="button button-primary button-large" value="<?php if (isset($id)) { ?> Update Event <?php } else { ?> Add Event <?php } ?>"></div>
                                             <div class="clear"></div>
                                         </div>
                                     </div>
@@ -91,14 +100,14 @@ if (isset($_GET['success'])) {
                                     <!-- Text input-->
                                     <div class="form-group">
                                         <label for="name">Name
-                                            <input id="name" name="name" type="text" placeholder="Event name" required>
+                                            <input id="name" name="name" type="text" placeholder="Event name" value="<?php echo $event_array['name'] ?>" required>
                                         </label>
                                     </div>
 
                                     <!-- Date input-->
                                     <div class="form-group">
                                         <label for="date">Date
-                                            <input id="date" name="date" type="date" placeholder="Event date" required>
+                                            <input id="date" name="date" type="date" placeholder="Event date" value="<?php if(!is_null($event_array['date'])) { $time_date = strtotime( $event_array['date'] ); echo date( 'Y-m-d', $time_date ); } ?>" required>
                                         </label>
                                         <!-- TODO: add time support and format date + time
                                         <label for="time">Time
@@ -110,21 +119,21 @@ if (isset($_GET['success'])) {
                                     <!-- Number input-->
                                     <div class="form-group">
                                         <label for="participants_max">Max participants
-                                            <input id="participants_max" name="participants_max" type="number" min="0" placeholder="Max number of participants" required>
+                                            <input id="participants_max" name="participants_max" type="number" min="0" placeholder="Max number of participants" value="<?php echo $event_array['participants_max'] ?>" required>
                                         </label>
                                     </div>
 
                                     <!-- Text input-->
                                     <div class="form-group">
                                         <label for="organizer">Organizer
-                                            <input id="organizer" name="organizer" type="text" placeholder="Organizer name" required>
+                                            <input id="organizer" name="organizer" type="text" placeholder="Organizer name" value="<?php echo $event_array['organizer'] ?>" required>
                                         </label>
                                     </div>
 
                                     <!-- Email input-->
                                     <div class="form-group">
                                         <label for="organizer_email">Organizer email
-                                            <input id="organizer_email" name="organizer_email" type="email" placeholder="Organizer email" required>
+                                            <input id="organizer_email" name="organizer_email" type="email" placeholder="Organizer email" value="<?php echo $event_array['organizer_email'] ?>" required>
                                         </label>
                                     </div>
                                 </fieldset>
@@ -183,7 +192,7 @@ if (isset($_GET['success'])) {
 
                                 </style>
                                 <input id="pac-input" class="controls" type="text" name="localisation"
-                                       placeholder="Enter a location">
+                                       placeholder="Enter a location" value="<?php echo $event_array['localisation'] ?>" required>
                                 <div id="type-selector" class="controls">
                                     <input type="radio" name="type" id="changetype-all" checked="checked">
                                     <label for="changetype-all">All</label>
@@ -285,7 +294,7 @@ if (isset($_GET['success'])) {
                             <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text">Open / Close bloc</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle ui-sortable-handle"><span>Event description</span></h2>
                             <div class="inside">
                                 <!-- Textarea TinyMCE -->
-                                <?php wp_editor( '', 'description', array('media_buttons'=>false,'textarea_name'=>'description','teeny'=>true) ); ?>
+                                <?php wp_editor( $event_array['description'], 'description', array('media_buttons'=>false,'textarea_name'=>'description','teeny'=>true) ); ?>
                             </div>
                         </div>
                     </div>

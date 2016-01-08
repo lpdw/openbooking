@@ -153,9 +153,9 @@ if ( !class_exists( 'obEventsTable' ) ) {
             $title = '<strong>' . $item['name'] . '</strong>';
 
             $actions = [
-                'view' => sprintf( '<a href="?page=%s&action=%s&event=%s">'.__( 'View' , 'openbooking' ).'</a>', esc_attr( $_REQUEST['page'] ), 'view', absint( $item['id'] ) ),
-                'edit' => sprintf( '<a href="?page=%s&action=%s&event=%s">'.__( 'Edit' , 'openbooking' ).'</a>', esc_attr( $_REQUEST['page'] ), 'edit', absint( $item['id'] ) ),
-                'delete' => sprintf( '<a href="?page=%s&action=%s&event=%s&_wpnonce=%s">'.__( 'Delete' , 'openbooking' ).'</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['id'] ), $delete_nonce )
+                'view' => sprintf( '<a href="/event/?event_id=%s">'.__( 'View' , 'openbooking' ).'</a>', absint( $item['id'] ) ), //TODO : dynamic event page slug
+                'edit' => sprintf( '<a href="?page=%s&action=%s&id=%s">'.__( 'Edit' , 'openbooking' ).'</a>', 'openbooking-new-event', 'edit', absint( $item['id'] ) ),
+                'delete' => sprintf( '<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">'.__( 'Delete' , 'openbooking' ).'</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['id'] ), $delete_nonce )
             ];
 
             return $title . $this->row_actions( $actions );

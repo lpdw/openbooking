@@ -143,7 +143,7 @@ class Openbooking_Admin {
 		add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Events', $this->plugin_name ),
-			__( 'Events', $this->plugin_name ),
+			__( 'Manage Events', $this->plugin_name ),
 			'manage_options',
 			'openbooking-events',
 			array( $this, 'display_events_page' )
@@ -153,7 +153,7 @@ class Openbooking_Admin {
 		add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Add Event', $this->plugin_name ),
-			__( 'Add Event', $this->plugin_name ),
+			__( 'New Event', $this->plugin_name ),
 			'manage_options',
 			'openbooking-new-event',
 			array( $this, 'display_new_event_page' )
@@ -163,31 +163,31 @@ class Openbooking_Admin {
 		add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Participants', $this->plugin_name ),
-			__( 'Participants', $this->plugin_name ),
+			__( 'Manage Participants', $this->plugin_name ),
 			'manage_options',
 			'openbooking-participants',
 			array( $this, 'display_participants_page' )
 		);
 
 		// Add Participant page
-		add_submenu_page(
+		/*add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Add Participant', $this->plugin_name ),
-			__( 'Add Participant', $this->plugin_name ),
+			__( 'New Participant', $this->plugin_name ),
 			'manage_options',
 			'openbooking-new-participant',
 			array( $this, 'display_new_participant_page' )
-		);
+		);*/
 
 		// Newsletter page
-		add_submenu_page(
+		/*add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Newsletter/Reminder', $this->plugin_name ),
 			__( 'Newsletter', $this->plugin_name ),
 			'edit_pages',
 			'openbooking-newsletter',
 			array( $this, 'display_newsletter_page' )
-		);
+		);*/
 
 		// Options page
 		add_submenu_page(
@@ -258,6 +258,8 @@ class Openbooking_Admin {
 	 * @since   1.0.0
 	 */
 	public function display_new_event_page() {
+		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Event.php');
+
 		include_once( 'partials/openbooking-new-event-display.php' );
 	}
 
@@ -266,8 +268,9 @@ class Openbooking_Admin {
 	 *
 	 * @since   1.0.0
 	 */
-	public function new_event_hook() {
-		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Event.php');
+	public function new_event_hook()
+	{
+		include_once(WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Event.php');
 
 		if (isset($_REQUEST['publish'])) {
 			$event = array(
@@ -282,9 +285,28 @@ class Openbooking_Admin {
 				'description' => $_REQUEST['description']
 			);
 
-			Event::add($event['name'],$event['description'],$event['localisation'],$event['date'],$event['participants_max'],$event['organizer'],$event['organizer_email'],$event['open_to_registration']);
+			Event::add($event['name'], $event['description'], $event['localisation'], $event['date'], $event['participants_max'], $event['organizer'], $event['organizer_email'], $event['open_to_registration']);
 
-			wp_redirect(admin_url('admin.php?page=openbooking-new-event&success=true'));
+			wp_redirect(admin_url('admin.php?page=openbooking-new-event&success=addok'));
+
+		} elseif (isset($_REQUEST['save'])) {
+			$event = array(
+				'id' => $_REQUEST['id'],
+				'save' => $_REQUEST['save'],
+				'open_to_registration' => $_REQUEST['open_to_registration'],
+				'name' => $_REQUEST['name'],
+				'date' => $_REQUEST['date'],
+				'localisation' => $_REQUEST['localisation'],
+				'participants_max' => $_REQUEST['participants_max'],
+				'organizer' => $_REQUEST['organizer'],
+				'organizer_email' => $_REQUEST['organizer_email'],
+				'description' => $_REQUEST['description']
+			);
+
+			$event_obj = new Event($event['id']);
+			$event_obj->update($event['name'], $event['description'], $event['localisation'], $event['date'], $event['participants_max'], $event['organizer'], $event['organizer_email'], $event['open_to_registration']);
+
+			wp_redirect(admin_url('admin.php?page=openbooking-new-event&action=edit&id='.$event['id'].'&success=updateok'));
 
 		} else {
 			die('Error');
