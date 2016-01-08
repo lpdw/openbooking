@@ -143,7 +143,7 @@ class Openbooking_Admin {
 		add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Events', $this->plugin_name ),
-			__( 'Events', $this->plugin_name ),
+			__( 'Manage Events', $this->plugin_name ),
 			'manage_options',
 			'openbooking-events',
 			array( $this, 'display_events_page' )
@@ -153,7 +153,7 @@ class Openbooking_Admin {
 		add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Add Event', $this->plugin_name ),
-			__( 'Add Event', $this->plugin_name ),
+			__( 'New Event', $this->plugin_name ),
 			'manage_options',
 			'openbooking-new-event',
 			array( $this, 'display_new_event_page' )
@@ -163,7 +163,7 @@ class Openbooking_Admin {
 		add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Participants', $this->plugin_name ),
-			__( 'Participants', $this->plugin_name ),
+			__( 'Manage Participants', $this->plugin_name ),
 			'manage_options',
 			'openbooking-participants',
 			array( $this, 'display_participants_page' )
@@ -173,21 +173,21 @@ class Openbooking_Admin {
 		add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Add Participant', $this->plugin_name ),
-			__( 'Add Participant', $this->plugin_name ),
+			__( 'New Participant', $this->plugin_name ),
 			'manage_options',
 			'openbooking-new-participant',
 			array( $this, 'display_new_participant_page' )
 		);
 
 		// Newsletter page
-		add_submenu_page(
+		/*add_submenu_page(
 			'openbooking',
 			__( 'Openbooking Newsletter/Reminder', $this->plugin_name ),
 			__( 'Newsletter', $this->plugin_name ),
 			'edit_pages',
 			'openbooking-newsletter',
 			array( $this, 'display_newsletter_page' )
-		);
+		);*/
 
 		// Options page
 		add_submenu_page(
@@ -219,15 +219,21 @@ class Openbooking_Admin {
 		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Participant.php');
 		include_once('partials/openbooking-participants-class.php');
 
-		/* DEV TEST BLOCK TODO : delete me */
-		//Participant::add('Toto','MICHEL','michel.toto@gmail.com','password');
-		//Participant::add('Gabe','NEWELL','praiselordgaben@gmail.com','password');
-		/* DEV TEST BLOCK */
-
 		//add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 10, 3 );
 		$this->participants_obj = new obParticipantsTable();
 
 		include_once('partials/openbooking-participants-display.php');
+	}
+
+	/**
+	 * Display New Participant page content.
+	 *
+	 * @since   1.0.0
+	 */
+	public function display_new_participant_page() {
+		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Participant.php');
+
+		include_once( 'partials/openbooking-new-participant-display.php' );
 	}
 
 	/**
@@ -238,13 +244,6 @@ class Openbooking_Admin {
 	public function display_events_page() {
 		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Event.php');
 		include_once('partials/openbooking-events-class.php');
-
-		//$date1 = new DateTime('2000-01-01');
-		//$date2 = new DateTime();
-		/* DEV TEST BLOCK TODO : delete me */
-		//Event::add('Steam Sales','Praise Lord Gaben, Steam Sales are coming ! Shut up and get my money ! Spaces go with ionic cannon! This devastation has only been invaded by a harmless starship. The phenomenan is more parasite now than star. unrelated and impressively delighted.','France','2000-01-01',22,'Gabe Newell','lordgaben@gmail.com',true);
-		//Event::add('Galette des Rois','Parce que la frangipane, il n\'y a que ça de vrai ! Leek smoothie has to have a delicious, puréed cauliflower component. Crême fraîche soup is just not the same without woodruff and shredded old rice. Try toasting cabbage sauce enameled with chicken lard sauce.','Paris','2015-01-02',10,'Les Rois','leskingsdelastreet@gmail.com',false);
-		/* DEV TEST BLOCK */
 
 		//add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 10, 3 );
 		$this->events_obj = new obEventsTable();
@@ -258,7 +257,116 @@ class Openbooking_Admin {
 	 * @since   1.0.0
 	 */
 	public function display_new_event_page() {
+		include_once (WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Event.php');
+
 		include_once( 'partials/openbooking-new-event-display.php' );
+	}
+
+	/**
+	 * Hook for adding/editing new post (event or participant).
+	 *
+	 * @since   1.0.0
+	 */
+	public function custom_post_submit()
+	{
+		include_once(WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Event.php');
+		include_once(WP_PLUGIN_DIR . '/openbooking/openbooking-api/_class/metier/Participant.php');
+
+		if (!function_exists('publish_event')){
+			function publish_event(){
+				$event = array(
+					'type' => $_REQUEST['type'],
+					'publish' => $_REQUEST['publish'],
+					'open_to_registration' => $_REQUEST['open_to_registration'],
+					'name' => $_REQUEST['name'],
+					'date' => $_REQUEST['date'],
+					'localisation' => $_REQUEST['localisation'],
+					'participants_max' => $_REQUEST['participants_max'],
+					'organizer' => $_REQUEST['organizer'],
+					'organizer_email' => $_REQUEST['organizer_email'],
+					'description' => $_REQUEST['description']
+				);
+
+				Event::add($event['name'], $event['description'], $event['localisation'], $event['date'], $event['participants_max'], $event['organizer'], $event['organizer_email'], $event['open_to_registration']);
+
+				wp_redirect(admin_url('admin.php?page=openbooking-new-event&success=addok'));
+			}
+		}
+
+		if (!function_exists('publish_participant')){
+
+			if (!function_exists('publish_participant')){
+				function publish_participant(){
+					$participant = array(
+						'type' => $_REQUEST['type'],
+						'publish' => $_REQUEST['publish'],
+						'first_name' => $_REQUEST['first_name'],
+						'last_name' => $_REQUEST['last_name'],
+						'email' => $_REQUEST['email'],
+						'password' => $_REQUEST['password']
+					);
+
+					Participant::add($participant['first_name'],$participant['last_name'],$participant['email'],$participant['password']);
+
+					wp_redirect(admin_url('admin.php?page=openbooking-new-participant&success=addok'));
+				}
+			}
+
+		}
+
+		if (!function_exists('save_event')){
+			function save_event() {
+				$event = array(
+					'type' => $_REQUEST['type'],
+					'id' => $_REQUEST['id'],
+					'save' => $_REQUEST['save'],
+					'open_to_registration' => $_REQUEST['open_to_registration'],
+					'name' => $_REQUEST['name'],
+					'date' => $_REQUEST['date'],
+					'localisation' => $_REQUEST['localisation'],
+					'participants_max' => $_REQUEST['participants_max'],
+					'organizer' => $_REQUEST['organizer'],
+					'organizer_email' => $_REQUEST['organizer_email'],
+					'description' => $_REQUEST['description']
+				);
+
+				$event_obj = new Event($event['id']);
+				$event_obj->update($event['name'], $event['description'], $event['localisation'], $event['date'], $event['participants_max'], $event['organizer'], $event['organizer_email'], $event['open_to_registration']);
+
+				wp_redirect(admin_url('admin.php?page=openbooking-new-event&action=edit&id='.$event['id'].'&success=updateok'));
+			}
+		}
+
+		if (!function_exists('save_participant')) {
+			//TODO : edit participant
+		}
+
+		if (isset($_REQUEST['publish'])) {
+
+			if ($_GET['type']=='event'){
+				publish_event();
+			} elseif($_GET['type']=='participant') {
+				publish_participant();
+			} else {
+				$request = print_r($_REQUEST);
+				die ("Error : $request");
+			}
+
+		} elseif (isset($_REQUEST['save'])) {
+
+			if ($_GET['type']=='event') {
+				save_event();
+			} elseif($_GET['type']=='participant') {
+
+			} else {
+				$request = print_r($_REQUEST);
+				die ("Error : $request");
+			}
+
+		} else {
+			$request = print_r($_REQUEST);
+			die ("Error : $request");
+		}
 	}
 
 	/**

@@ -1,18 +1,19 @@
 <?php
-//require_once ('dBug.php');
+//TODO: better datetime display. We can do something with date_i18n( get_option( 'date_format' ), strtotime( $datetime ) );
 if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 if ( !class_exists( 'obEventsTable' ) ) {
     /**
-     * Bookings Table Class
+     * Events Table Class
      *
-     * Extends WP_List_Table to display the list of bookings in a format similar to
+     * Extends WP_List_Table to display the list of events in a format similar to
      * the default WordPress post tables.
      *
      * @since 1.0.0
      */
+
     class obEventsTable extends WP_List_Table
     {
         /** Class constructor */
@@ -77,72 +78,23 @@ if ( !class_exists( 'obEventsTable' ) ) {
             return $result;
 
             */
-            /*$result = array(
-                array(
-                    "id"=>"1",
-                    "name"=>"Steam Sales",
-                    "description"=>"Praise Lord Gaben, Steam Sales are coming ! Shut up and get my money ! Spaces go with ionic cannon! This devastation has only been invaded by a harmless starship. The phenomenan is more parasite now than star. unrelated and impressively delighted.",
-                    "date"=>"2015-12-20",
-                    "organizer"=>"Gabe Newell",
-                    "organizer_email"=>"lordgaben@gmail.com",
-                    "open_to_registration"=> 0,
-                    "canceled"=> 0
-                ),
-                array(
-                    "id"=>"2",
-                    "name"=>"Galette des Rois",
-                    "description"=>"Parce que la frangipane, il n'y a que ça de vrai ! Leek smoothie has to have a delicious, puréed cauliflower component. Crême fraîche soup is just not the same without woodruff and shredded old rice. Try toasting cabbage sauce enameled with chicken lard sauce.",
-                    "date"=>"2016-01-06",
-                    "organizer"=>"Les Rois",
-                    "organizer_email"=>"leskingsdelastreet@gmail.com",
-                    "open_to_registration"=> 1,
-                    "canceled"=> 0
-                ),
-                array(
-                    "id"=>"1",
-                    "name"=>"Martial Art Courses",
-                    "description"=>"From Shaolin Yoda. Yes, there is paradise, it sits with affirmation. Peace is not beloved in earth, the heavens of life, or shangri-la, but everywhere. Our brilliant density for justice is to experience others truly. Samadhi studies when you receive with resurrection.",
-                    "date"=>"2016-02-19",
-                    "organizer"=>"Shaolin Yoda",
-                    "organizer_email"=>"xxxyodalight92@gmail.com",
-                    "open_to_registration"=> 1,
-                    "canceled"=> 1
-                ),
-                array(
-                    "id"=>"1",
-                    "name"=>"True Latin Courses",
-                    "description"=>"Lorem Ipsum Festus hippotoxota diligenter dignuss amor est. Racanas peregrinatione! Hercle, resistentia castus!, neuter lapsus! Sensorem assimilants, tanquam velox consilium. Compater manducares, tanquam rusticus sensorem. Exsuls studere in chremisa!",
-                    "date"=>"2016-10-02",
-                    "organizer"=>"Lorène Ipsum",
-                    "organizer_email"=>"loremipsumdolorsiamet@gmail.com",
-                    "open_to_registration"=> 1,
-                    "canceled"=> 0
-                )
-            );*/
 
-            function convertToArray(&$item , $key)
-            {
-                $item = (array) $item ;
+            if (isset($_REQUEST['paged'])) {
+                $page_number = $_REQUEST['paged'];
             }
 
-            $allevents_obj = \OpenBooking\_Class\Metier\Event::getAll(true);
+
+            if ( !function_exists('convertToArray')){
+                function convertToArray(&$item, $key) {
+                    $item = (array)$item;
+                }
+            }
+
+            $allevents_obj = \OpenBooking\_Class\Metier\Event::getAll(true,$per_page,$page_number);
 
             array_walk($allevents_obj, 'convertToArray');
 
             $result = $allevents_obj;
-
-            new dBug($result);
-
-
-            if ( ! empty( $_REQUEST['orderby'] ) ) {
-                if ($_REQUEST['order']=="ASC") {
-                    $result = asort($result);
-                } elseif ($_REQUEST['order']=="DSC") {
-                    $result = arsort($result);
-                } else {
-                    echo __('Error while trying to sort' , 'openbooking');
-                }
-            }
 
             return $result;
 
@@ -175,18 +127,10 @@ if ( !class_exists( 'obEventsTable' ) ) {
          * @return null|string
          */
         public static function record_count() {
-            /*
-            // The wordpress way, for exemple only :
 
-            global $wpdb;
+            $result = count(\OpenBooking\_Class\Metier\Event::getAll(true));
+            return $result;
 
-            $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}customers";
-
-            return $wpdb->get_var( $sql );
-
-            */
-
-            return 42;
         }
 
         /** Text displayed when no data is available */
@@ -209,9 +153,9 @@ if ( !class_exists( 'obEventsTable' ) ) {
             $title = '<strong>' . $item['name'] . '</strong>';
 
             $actions = [
-                'view' => sprintf( '<a href="?page=%s&action=%s&event=%s">'.__( 'View' , 'openbooking' ).'</a>', esc_attr( $_REQUEST['page'] ), 'view', absint( $item['id'] ) ),
-                'edit' => sprintf( '<a href="?page=%s&action=%s&event=%s">'.__( 'Edit' , 'openbooking' ).'</a>', esc_attr( $_REQUEST['page'] ), 'edit', absint( $item['id'] ) ),
-                'delete' => sprintf( '<a href="?page=%s&action=%s&event=%s&_wpnonce=%s">'.__( 'Delete' , 'openbooking' ).'</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['id'] ), $delete_nonce )
+                'view' => sprintf( '<a href="/event/?event_id=%s">'.__( 'View' , 'openbooking' ).'</a>', absint( $item['id'] ) ), //TODO : dynamic event page slug
+                'edit' => sprintf( '<a href="?page=%s&action=%s&id=%s">'.__( 'Edit' , 'openbooking' ).'</a>', 'openbooking-new-event', 'edit', absint( $item['id'] ) ),
+                'delete' => sprintf( '<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">'.__( 'Delete' , 'openbooking' ).'</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['id'] ), $delete_nonce )
             ];
 
             return $title . $this->row_actions( $actions );
@@ -231,10 +175,10 @@ if ( !class_exists( 'obEventsTable' ) ) {
                 case 'name':
                 case 'date' :
                 case 'open_to_registration' :
-                case 'canceled':
+                case 'cancelled':
                     return $item[ $column_name ];
                 case 'description':
-                    return $this->truncate($item[ $column_name ],50); //TODO : customisable value from options ?
+                    return $this->truncate($item[ $column_name ],150); //TODO : customisable value from options ?
                 case 'organizer' :
                     return '<a href="mailto:'.$item[ 'organizer_email' ].'">'.$item[ $column_name ].'</a>';
                 default:
@@ -269,7 +213,7 @@ if ( !class_exists( 'obEventsTable' ) ) {
                 'date' => __( 'Date', 'openbooking' ),
                 'organizer' => __( 'Organizer', 'openbooking' ),
                 'open_to_registration' => __( 'Open', 'openbooking' ),
-                'canceled' => __( 'Canceled', 'openbooking' )
+                'cancelled' => __( 'Cancelled', 'openbooking' )
             ];
 
             return $columns;
@@ -287,7 +231,7 @@ if ( !class_exists( 'obEventsTable' ) ) {
                 'date'          => array( 'date', false ),
                 'organizer'     => array( 'organizer', false ),
                 'open_to_registration' => array( 'open_to_registration', false ),
-                'canceled'      => array( 'canceled', false )
+                'cancelled'      => array( 'cancelled', false )
             );
 
             return $sortable_columns;

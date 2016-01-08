@@ -18,3 +18,24 @@
     left: 120px;
     top: 0;
 }
+
+/**
+ * All events page
+ */
+.wp-list-table .column-name {
+    width: 15%;
+}
+.wp-list-table .column-description {
+    width: 22%;
+}
+.wp-list-table .column-date {
+    width: 15%;
+}
+.wp-list-table .column-organizer {
+    width: 12%;
+}
+.wp-list-table .column-open_to_registration,
+.wp-list-table .column-cancelled{
+    width: 8%;
+}
+
